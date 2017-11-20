@@ -1,5 +1,6 @@
-import React from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router";
 
 import agent from "../agent";
 import ListErrors from "./ListErrors";
@@ -9,53 +10,78 @@ import ListErrors from "./ListErrors";
 const mapStateToProps = state => ({ ...state.auth });
 
 const mapDispatchToProps = dispatch => ({
-  onSubmit: (email, password) =>
-    dispatch({ type: "LOGIN", payload: agent.Auth.login(email, password) })
+  onSubmit: (username, email, password) => {
+    const payload = agent.Auth.register(username, email, password);
+    dispatch({ type: "REGISTER", payload: payload });
+  }
 });
 
-class Login extends React.Component {
-  state = {};
-  handleInputonChange = event => {
+class Register extends Component {
+  state = {
+    username: "",
+    email: "",
+    password: ""
+  };
+  handleInputChange = event => {
+    const targetName = event.target.name;
+
     this.setState({
-      [event.target.name]: event.target.value
+      [targetName]: event.target.value
     });
   };
 
-  handleOnSubmit = event => {
+  submitForm = event => {
     event.preventDefault();
-    this.props.onSubmit(this.state.email, this.state.password);
+    const { username, email, password } = this.state;
+    this.props.onSubmit(username, email, password);
   };
 
   render() {
+    const { username, email, password } = this.state;
     return (
       <div className="auth-page">
         <div className="container page">
           <div className="row">
             <div className="col-md-6 offset-md-3 col-xs-12">
-              <h1 className="text-xs-center">Sign In</h1>
+              <h1 className="text-xs-center">Sign Up</h1>
               <p className="text-xs-center">
-                <a>Need an account?</a>
+                <Link to="login">Have an account?</Link>
               </p>
+
               <ListErrors errors={this.props.errors} />
-              <form onSubmit={this.handleOnSubmit}>
+
+              <form onSubmit={e => this.submitForm(e)}>
                 <fieldset>
                   <fieldset className="form-group">
                     <input
-                      onChange={this.handleInputonChange}
                       className="form-control form-control-lg"
-                      name="email"
-                      type="email"
-                      placeholder="Email"
+                      type="text"
+                      name="username"
+                      placeholder="Username"
+                      value={username}
+                      onChange={this.handleInputChange}
                     />
                   </fieldset>
 
                   <fieldset className="form-group">
                     <input
-                      onChange={this.handleInputonChange}
                       className="form-control form-control-lg"
-                      name="password"
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      value={email}
+                      onChange={this.handleInputChange}
+                    />
+                  </fieldset>
+
+                  <fieldset className="form-group">
+                    <input
+                      className="form-control form-control-lg"
                       type="password"
+                      name="password"
                       placeholder="Password"
+                      value={password}
+                      onChange={this.handleInputChange}
                     />
                   </fieldset>
 
@@ -64,7 +90,7 @@ class Login extends React.Component {
                     type="submit"
                     disabled={this.props.inProgress}
                   >
-                    > Sign in
+                    Join Meow
                   </button>
                 </fieldset>
               </form>
@@ -76,4 +102,4 @@ class Login extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Register);

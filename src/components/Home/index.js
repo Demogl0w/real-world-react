@@ -5,8 +5,6 @@ import Banner from "./Banner";
 
 import agent from "../../agent";
 
-const Promise = global.Promise;
-
 const mapStateToProps = state => ({
   appName: state.common.appName
 });
@@ -29,7 +27,7 @@ class Home extends Component {
             <MainView />
             <div className="col-md-3">
               <div className="sidebar">
-                <p>Popular Tags</p>
+                <p>Gold!</p>
               </div>
             </div>
           </div>
